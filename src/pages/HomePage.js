@@ -149,12 +149,17 @@ const Homepage = () => {
       {/* Beat Grid */}
       <div style={{ padding: '2rem', color: '#fff', background: '#121418' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>🎵 RabsStore</h1>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1.5rem'
-        }}>
+   <div style={{
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: '1.5rem',
+  justifyItems: 'center'
+}}>
+  {beats.map(beat => (
+    ...
+  ))}
+</div>
+
           {beats.map(beat => (
             <Link
               key={beat.id}
