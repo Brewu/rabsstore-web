@@ -9,6 +9,7 @@ import Homepage from './pages/HomePage';
 import ForgotPassword from './pages/ForgottenPassword';
 import { CartProvider } from './context/CartContext';
 import CartScreen from './pages/CartScreen';
+import BeatDetails from './pages/Home';
 import MyAccountPage from './pages/MyAccountPage';
 const cors = require('cors');
 
@@ -33,7 +34,7 @@ function App() {
         <Route path="/Cart" element={<CartScreen />} />
         <Route path="/Account" element={<MyAccountPage />} />
         <Route path="/Success" element={<SuccessScreen />} />
-        <Route path="/beat/:id" element={<Home />} />  // dynamic beat detail page
+        <Route path="/beat/:id" element={<BeatDetails />} />
 
       </Routes>
     </CartProvider>
