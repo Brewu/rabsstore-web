@@ -1,35 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { db } from '../firebase';
 import { FaShoppingCart, FaBars, FaPlus, FaMinus } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 
 const BeatDetails = () => {
-  const { state } = useLocation();
-  const beat = state?.beat;
+  const { id } = useParams();
   const navigate = useNavigate();
   const { cartItems, updateQuantity, totalItems } = useCart();
 
+  const [beat, setBeat] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const auth = getAuth();
   const user = auth.currentUser;
+
+  const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    const fetchBeat = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'beats', id));
+        if (docSnap.exists()) {
+          setBeat({ id, ...docSnap.data() });
+        } else {
+          setBeat(null);
+        }
+      } catch (error) {
+        console.error('Error fetching beat:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBeat();
+  }, [id]);
 
   const isDiscountValid =
     beat?.discount > 0 &&
     (!beat.discountEndDate || new Date() < new Date(beat.discountEndDate));
 
   const finalPrice = isDiscountValid
-    ? Number(beat.price) * (1 - beat.discount / 100)
-    : Number(beat.price);
+    ? Number(beat?.price) * (1 - beat?.discount / 100)
+    : Number(beat?.price);
 
-  const discountedBeat = {
-    ...beat,
-    price: finalPrice,
-    discount: Number(beat.discount),
-  };
-
-  const [quantity, setQuantity] = useState(
-    beat?.id && cartItems[beat.id]?.quantity ? cartItems[beat.id].quantity : 0
-  );
+  const discountedBeat = beat
+    ? {
+        ...beat,
+        price: finalPrice,
+        discount: Number(beat.discount),
+      }
+    : null;
 
   useEffect(() => {
     if (beat && user) {
@@ -39,12 +62,13 @@ const BeatDetails = () => {
 
   const handleQuantityChange = (action) => {
     if (!user) {
-      navigate('/login'); // redirect to sign-in if not logged in
+      navigate('/login');
       return;
     }
-    setQuantity(prev => action === 'add' ? prev + 1 : Math.max(prev - 1, 0));
+    setQuantity((prev) => (action === 'add' ? prev + 1 : Math.max(prev - 1, 0)));
   };
 
+  if (loading) return <p style={{ color: '#fff' }}>Loading...</p>;
   if (!beat) return <p style={{ color: '#fff' }}>Beat not found.</p>;
 
   return (
@@ -218,4 +242,4 @@ const BeatDetails = () => {
   );
 };
 
-export default BeatDetails; 
+export default BeatDetails;
