@@ -19,7 +19,7 @@ const cors = require('cors');
 
 function App() {
   return (
-    
+
     <CartProvider>
 
       <Routes>
@@ -33,6 +33,7 @@ function App() {
         <Route path="/Cart" element={<CartScreen />} />
         <Route path="/Account" element={<MyAccountPage />} />
         <Route path="/Success" element={<SuccessScreen />} />
+        <Route path="/beat/:id" element={<Home />} />  // dynamic beat detail page
 
       </Routes>
     </CartProvider>
