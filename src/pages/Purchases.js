@@ -132,7 +132,7 @@ const Purchases = () => {
         {beats.map((beat) => (
           <div
             key={beat.id}
-            onClick={() => navigate('/Home', { state: { beat } })}
+            onClick={() => navigate('/', { state: { beat } })}
             style={{
               backgroundColor: '#1d1f27',
               borderRadius: 14,
