@@ -38,16 +38,26 @@ const Homepage = () => {
   return (
     <div style={{ backgroundColor: '#121418', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
       {/* Navigation Bar */}
-      <nav style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#1e1f25',
-        padding: '1rem 2rem',
-        borderBottom: '1px solid #2a2b33'
-      }}>
+   <nav style={{
+  display: 'flex',
+  flexWrap: 'wrap', // <-- allow wrapping
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: '#1e1f25',
+  padding: '1rem',
+  borderBottom: '1px solid #2a2b33',
+  rowGap: '1rem' // add spacing when it wraps
+}}>
+
         <h2 style={{ color: '#fff', fontWeight: 'bold' }}>🎵 RabsStore</h2>
-        <div style={{ display: 'flex', gap: '1.5rem', position: 'relative' }}>
+<div style={{
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '1rem',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%',
+}}>
           <button onClick={() => navigate('/')} style={navBtnStyle}>Home</button>
 
           {/* Cart Button with Dropdown */}
