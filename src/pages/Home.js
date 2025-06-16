@@ -3,15 +3,30 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { FaShoppingCart, FaBars, FaPlus, FaMinus } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import { useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // adjust if needed
 
 const BeatDetails = () => {
-  const { state } = useLocation();
-  const beat = state?.beat;
   const navigate = useNavigate();
   const { cartItems, updateQuantity, totalItems } = useCart();
 
   const auth = getAuth();
   const user = auth.currentUser;
+  const { id } = useParams();
+  const [beat, setBeat] = useState(null);
+
+  useEffect(() => {
+    const fetchBeat = async () => {
+      const docRef = doc(db, 'beats', id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setBeat({ id: docSnap.id, ...docSnap.data() });
+      }
+    };
+
+    fetchBeat();
+  }, [id]);
 
   const isDiscountValid =
     beat?.discount > 0 &&
