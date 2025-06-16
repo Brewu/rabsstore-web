@@ -1,40 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDoc, doc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FaShoppingCart, FaBars, FaPlus, FaMinus } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { getAuth } from 'firebase/auth';
 
 const BeatDetails = () => {
-  const { id } = useParams(); // get beat ID from URL
+  const { id } = useParams(); // Get beat ID from URL
+  const navigate = useNavigate();
   const [beat, setBeat] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(0);
   const { cartItems, updateQuantity, totalItems } = useCart();
-  const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
-
-  const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
     const fetchBeat = async () => {
       try {
-        const docRef = doc(db, 'beats', id);
-        const docSnap = await getDoc(docRef);
+        const docSnap = await getDoc(doc(db, 'beats', id));
         if (docSnap.exists()) {
           const beatData = { id: docSnap.id, ...docSnap.data() };
           setBeat(beatData);
           setQuantity(cartItems[beatData.id]?.quantity || 0);
         } else {
-          console.log('No such beat!');
+          console.error('Beat not found');
         }
-      } catch (error) {
-        console.error('Error fetching beat:', error);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchBeat();
   }, [id, cartItems]);
 
@@ -52,8 +51,8 @@ const BeatDetails = () => {
     setQuantity((prev) => (action === 'add' ? prev + 1 : Math.max(prev - 1, 0)));
   };
 
-  if (loading) return <p style={{ color: '#fff' }}>Loading...</p>;
-  if (!beat) return <p style={{ color: '#fff' }}>Beat not found.</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!beat) return <p>Beat not found.</p>;
 
   const isDiscountValid =
     beat.discount > 0 &&
@@ -64,9 +63,12 @@ const BeatDetails = () => {
     : Number(beat.price);
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', padding: '2rem', maxWidth: 1000, margin: '0 auto', backgroundColor: '#121418', color: '#f1f1f1', minHeight: '100vh' }}>
-      {/* ...same content as before with beat.youtubeUrl, beat.title, etc. */}
-      {/* Just replace all state.beat with beat now */}
+    <div style={{ padding: '2rem', color: '#fff' }}>
+      <h2>{beat.title}</h2>
+      <p>{beat.genre}</p>
+      <p>Price: ₵{finalPrice}</p>
+
+      {/* Add more UI like image, YouTube, and quantity controls */}
     </div>
   );
 };
