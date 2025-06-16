@@ -127,39 +127,34 @@ const Homepage = () => {
               </div>
             )}
           </div>
-  <a
-          href="https://www.youtube.com/@rabsbeats" // replace with your actual URL
-          target="_blank"
-          rel="noopener noreferrer"
-          style={navBtnStyle}
-        >
-          <FaYoutube style={{ color: 'red' }} />
-          YouTube
-        </a>
+          <a
+            href="https://www.youtube.com/@rabsbeats" // replace with your actual URL
+            target="_blank"
+            rel="noopener noreferrer"
+            style={navBtnStyle}
+          >
+            <FaYoutube style={{ color: 'red' }} />
+            YouTube
+          </a>
           <button onClick={() => navigate('/Account')} style={navBtnStyle}><FaUser /> Account</button>
         </div>
-        
+
         <button onClick={() => navigate('/Success')} style={navBtnStyle}>
           🧾 Purchases
         </button>
-      
+
 
       </nav>
 
       {/* Beat Grid */}
       <div style={{ padding: '2rem', color: '#fff', background: '#121418' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>🎵 RabsStore</h1>
-   <div style={{
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-  gap: '1.5rem',
-  justifyItems: 'center'
-}}>
-  {beats.map(beat => (
-    ...
-  ))}
-</div>
-
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1.5rem'
+        }}>
           {beats.map(beat => (
             <Link
               key={beat.id}
