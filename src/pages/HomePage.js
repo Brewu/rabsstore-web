@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaShoppingCart, FaUser, FaYoutube } from 'react-icons/fa';
+import { useCart } from '../context/CartContext';
 
 const Homepage = () => {
   const [beats, setBeats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { cartItems } = useCart();
+  const [showCartDropdown, setShowCartDropdown] = useState(false);
+
+  const cartArray = Object.values(cartItems || {});
 
   useEffect(() => {
     const fetchBeats = async () => {
@@ -29,66 +36,178 @@ const Homepage = () => {
   if (loading) return <p style={{ color: '#fff', padding: '2rem' }}>Loading beats...</p>;
 
   return (
-    <div style={{
-      padding: '2rem',
-      backgroundColor: '#121418',
-      minHeight: '100vh',
-      fontFamily: 'Inter, sans-serif',
-      color: '#fff'
-    }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', fontWeight: 'bold' }}>
-        🎶 Explore Beats
-      </h1>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '1.5rem',
+    <div style={{ backgroundColor: '#121418', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
+      {/* Navigation Bar */}
+      <nav style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#1e1f25',
+        padding: '1rem 2rem',
+        borderBottom: '1px solid #2a2b33'
       }}>
-        {beats.map(beat => (
-          <div
-            key={beat.id}
-            style={{
-              backgroundColor: '#1e1f25',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-              transition: 'transform 0.2s ease-in-out',
-            }}
-          >
-            <img
-              src={beat.image}
-              alt={beat.title}
-              style={{
-                width: '100%',
-                height: 150,
-                objectFit: 'cover'
-              }}
-            />
-            <div style={{ padding: '1rem' }}>
-              <h3 style={{ marginBottom: '0.3rem' }}>{beat.title}</h3>
-              <p style={{ fontSize: '0.9rem', color: '#bbb' }}>{beat.genre}</p>
-              <p style={{ margin: '0.5rem 0', fontWeight: 'bold' }}>₵{beat.price}</p>
-              <Link
-                to={`/beat/${beat.id}`}
-                style={{
-                  display: 'inline-block',
-                  marginTop: '0.5rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#4caf50',
+        <h2 style={{ color: '#fff', fontWeight: 'bold' }}>🎵 RabsStore</h2>
+        <div style={{ display: 'flex', gap: '1.5rem', position: 'relative' }}>
+          <button onClick={() => navigate('/')} style={navBtnStyle}>Home</button>
+
+          {/* Cart Button with Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowCartDropdown(prev => !prev)}
+              style={{ ...navBtnStyle, position: 'relative' }}
+            >
+              <FaShoppingCart />
+              Cart
+              {cartArray.length > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: -5,
+                  right: -10,
+                  background: 'red',
                   color: '#fff',
-                  textDecoration: 'none',
-                  borderRadius: '5px',
-                  fontWeight: 600
-                }}
-              >
-                View Details
-              </Link>
-            </div>
+                  borderRadius: '50%',
+                  padding: '2px 6px',
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold'
+                }}>
+                  {cartArray.length}
+                </span>
+              )}
+            </button>
+
+            {/* Mini Cart Dropdown */}
+            {showCartDropdown && (
+              <div style={{
+                position: 'absolute',
+                right: 0,
+                top: '2.8rem',
+                backgroundColor: '#1d1f27',
+                padding: '1rem',
+                borderRadius: 8,
+                width: 250,
+                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                zIndex: 100
+              }}>
+                {cartArray.length === 0 ? (
+                  <p style={{ color: '#ccc', fontSize: '0.9rem' }}>Cart is empty</p>
+                ) : (
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {cartArray.slice(0, 3).map(({ beat, quantity }) => (
+                      <li key={beat.id} style={{ marginBottom: '0.8rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <img src={beat.image} alt={beat.title} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6 }} />
+                          <div>
+                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#fff' }}>{beat.title} × {quantity}</p>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: '#aaa' }}>₵{beat.price}</p>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <button
+                  onClick={() => {
+                    setShowCartDropdown(false);
+                    navigate('/Cart');
+                  }}
+                  style={{
+                    marginTop: '0.5rem',
+                    width: '100%',
+                    padding: '0.5rem',
+                    backgroundColor: '#4caf50',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 5,
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }}
+                >
+                  View Full Cart
+                </button>
+              </div>
+            )}
           </div>
-        ))}
+  <a
+          href="https://www.youtube.com/@rabsbeats" // replace with your actual URL
+          target="_blank"
+          rel="noopener noreferrer"
+          style={navBtnStyle}
+        >
+          <FaYoutube style={{ color: 'red' }} />
+          YouTube
+        </a>
+          <button onClick={() => navigate('/Account')} style={navBtnStyle}><FaUser /> Account</button>
+        </div>
+        
+        <button onClick={() => navigate('/Success')} style={navBtnStyle}>
+          🧾 Purchases
+        </button>
+      
+
+      </nav>
+
+      {/* Beat Grid */}
+      <div style={{ padding: '2rem', color: '#fff', background: '#121418' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>🎵 RabsStore</h1>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1.5rem'
+        }}>
+          {beats.map(beat => (
+            <Link
+              key={beat.id}
+              to={`/beat/${beat.id}`}
+              style={{
+                background: '#1d1f27',
+                borderRadius: 10,
+                textDecoration: 'none',
+                color: '#fff',
+                padding: '1rem',
+                maxWidth: 400,
+                width: '100%',
+                transition: 'transform 0.2s ease-in-out',
+                margin: '0 auto',
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <img
+                src={beat.image}
+                alt={beat.title}
+                style={{
+                  width: '100%',
+                  height: 200,
+                  objectFit: 'cover',
+                  borderRadius: 10,
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                  marginBottom: '0.8rem'
+                }}
+              />
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
+              <p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>₵{beat.price}</p>
+            </Link>
+          ))}
+        </div>
       </div>
+
     </div>
   );
+};
+
+const navBtnStyle = {
+  background: 'none',
+  border: 'none',
+  color: '#fff',
+  fontSize: '1rem',
+  fontWeight: 600,
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.4rem'
 };
 
 export default Homepage;
