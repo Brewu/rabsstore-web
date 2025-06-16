@@ -1,83 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import { useNavigate } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
-import { useCart } from '../context/CartContext';
+import { Link } from 'react-router-dom';
 
 const Homepage = () => {
   const [beats, setBeats] = useState([]);
-  const navigate = useNavigate();
-  const { totalItems } = useCart();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBeats = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'beats'));
-        const beatList = querySnapshot.docs.map(doc => ({
+        const snapshot = await getDocs(collection(db, 'beats'));
+        const fetchedBeats = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
-        setBeats(beatList);
+        setBeats(fetchedBeats);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching beats:', error);
+        setLoading(false);
       }
     };
 
     fetchBeats();
   }, []);
 
-  return (
-    <div style={{ backgroundColor: '#121418', minHeight: '100vh', padding: '2rem', color: '#fff', fontFamily: 'Inter, sans-serif' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>🎵 RabsStore</h1>
-        <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/Cart')}>
-          <FaShoppingCart size={24} color="#ffffffcc" />
-          {totalItems > 0 && (
-            <span style={{
-              position: 'absolute',
-              top: -10,
-              right: -10,
-              background: '#e63946',
-              color: '#fff',
-              borderRadius: '50%',
-              padding: '0.3rem 0.6rem',
-              fontSize: '0.75rem',
-              fontWeight: 600
-            }}>
-              {totalItems}
-            </span>
-          )}
-        </div>
-      </div>
+  if (loading) return <p style={{ color: '#fff', padding: '2rem' }}>Loading beats...</p>;
 
-      {/* Beat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
+  return (
+    <div style={{
+      padding: '2rem',
+      backgroundColor: '#121418',
+      minHeight: '100vh',
+      fontFamily: 'Inter, sans-serif',
+      color: '#fff'
+    }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', fontWeight: 'bold' }}>
+        🎶 Explore Beats
+      </h1>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '1.5rem',
+      }}>
         {beats.map(beat => (
           <div
             key={beat.id}
-            onClick={() => navigate(`/beat/${beat.id}`)}
             style={{
-              backgroundColor: '#1d1f27',
-              borderRadius: 12,
+              backgroundColor: '#1e1f25',
+              borderRadius: '10px',
               overflow: 'hidden',
-              cursor: 'pointer',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.4)',
-              transition: 'transform 0.2s',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+              transition: 'transform 0.2s ease-in-out',
             }}
           >
             <img
               src={beat.image}
               alt={beat.title}
-              style={{ width: '100%', height: 180, objectFit: 'cover' }}
+              style={{
+                width: '100%',
+                height: 150,
+                objectFit: 'cover'
+              }}
             />
             <div style={{ padding: '1rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{beat.title}</h3>
-              <p style={{ fontSize: '0.95rem', color: '#bbb' }}>{beat.genre}</p>
-              <p style={{ fontWeight: 'bold', marginTop: '0.5rem' }}>
-                ₵{Number(beat.price).toFixed(2)}
-              </p>
+              <h3 style={{ marginBottom: '0.3rem' }}>{beat.title}</h3>
+              <p style={{ fontSize: '0.9rem', color: '#bbb' }}>{beat.genre}</p>
+              <p style={{ margin: '0.5rem 0', fontWeight: 'bold' }}>₵{beat.price}</p>
+              <Link
+                to={`/beat/${beat.id}`}
+                style={{
+                  display: 'inline-block',
+                  marginTop: '0.5rem',
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#4caf50',
+                  color: '#fff',
+                  textDecoration: 'none',
+                  borderRadius: '5px',
+                  fontWeight: 600
+                }}
+              >
+                View Details
+              </Link>
             </div>
           </div>
         ))}
