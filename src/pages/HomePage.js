@@ -11,6 +11,7 @@ const Homepage = () => {
   const navigate = useNavigate();
   const { cartItems } = useCart();
   const [showCartDropdown, setShowCartDropdown] = useState(false);
+const daysAgo = Math.floor((new Date() - beat.createdAt) / (1000 * 60 * 60 * 24));
 
   const cartArray = Object.values(cartItems || {});
 
@@ -213,6 +214,13 @@ style={{
               <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
               <p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
               <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>₵{beat.price}</p>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
+<p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
+<p style={{ fontSize: '1.1rem', fontWeight: 500 }}>₵{beat.price}</p>
+<p style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.3rem' }}>
+  Added: {daysAgo === 0 ? 'Today' : `${daysAgo} day(s) ago`}
+</p>
+
             </Link>
           ))}
         </div>
