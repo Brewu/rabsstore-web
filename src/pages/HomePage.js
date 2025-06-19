@@ -167,27 +167,31 @@ useEffect(() => {
       {/* Beat Grid */}
       <div style={{ padding: '2rem', color: '#fff', background: '#121418' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>🎵 RabsStore</h1>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1.5rem'
-        }}>
+    <div
+  style={{
+    display: 'flex',
+    overflowX: 'auto',
+    gap: '1rem',
+    paddingBottom: '1rem',
+    scrollSnapType: 'x mandatory',
+    WebkitOverflowScrolling: 'touch'
+  }}
+>
           {beats.map(beat => (
-            <Link
-              key={beat.id}
-              to={`/beat/${beat.id}`}
-              style={{
-                background: '#1d1f27',
-                borderRadius: 10,
-                textDecoration: 'none',
-                color: '#fff',
-                padding: '1rem',
-                maxWidth: 400,
-                width: '100%',
-                transition: 'transform 0.2s ease-in-out',
-                margin: '0 auto',
-              }}
+      <Link
+  key={beat.id}
+  to={`/beat/${beat.id}`}
+  style={{
+    background: '#1d1f27',
+    borderRadius: 10,
+    textDecoration: 'none',
+    color: '#fff',
+    padding: '1rem',
+    minWidth: 280,
+    flex: '0 0 auto',
+    scrollSnapAlign: 'start',
+    transition: 'transform 0.2s ease-in-out',
+  }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             >
