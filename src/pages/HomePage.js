@@ -40,13 +40,15 @@ const Homepage = () => {
       {/* Navigation Bar */}
    <nav style={{
   display: 'flex',
+     flexDirection:'column,
   flexWrap: 'wrap', // <-- allow wrapping
   justifyContent: 'space-between',
   alignItems: 'center',
   backgroundColor: '#1e1f25',
-  padding: '1rem',
+  padding: '10px',
   borderBottom: '1px solid #2a2b33',
   rowGap: '1rem' // add spacing when it wraps
+max-width: 768px
 }}>
 
         <h2 style={{ color: '#fff', fontWeight: 'bold' }}>🎵 RabsStore</h2>
