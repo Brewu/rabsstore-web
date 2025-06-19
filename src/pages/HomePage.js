@@ -201,15 +201,14 @@ style={{
               <img
                 src={beat.image}
                 alt={beat.title}
-                style={{
-                  width: '100%',
-                  height: 200,
-                  objectFit: 'cover',
-                  borderRadius: 10,
-                  pointerEvents: 'none',
-                  userSelect: 'none',
-                  marginBottom: '0.8rem'
-                }}
+            style={{
+  width: '100%',
+  height: 'auto',
+  aspectRatio: '16 / 9',
+  objectFit: 'cover',
+  borderRadius: 10,
+  marginBottom: '0.8rem'
+}}
               />
               <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
               <p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
