@@ -14,24 +14,28 @@ const Homepage = () => {
 
   const cartArray = Object.values(cartItems || {});
 
-  useEffect(() => {
-    const fetchBeats = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, 'beats'));
-        const fetchedBeats = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setBeats(fetchedBeats);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching beats:', error);
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchBeats = async () => {
+    try {
+      const beatsQuery = query(
+        collection(db, 'beats'),
+        orderBy('createdAt', 'desc') // Order by latest
+      );
+      const snapshot = await getDocs(beatsQuery);
+      const fetchedBeats = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setBeats(fetchedBeats);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching beats:', error);
+      setLoading(false);
+    }
+  };
 
-    fetchBeats();
-  }, []);
+  fetchBeats();
+}, []);
 
   if (loading) return <p style={{ color: '#fff', padding: '2rem' }}>Loading beats...</p>;
 
