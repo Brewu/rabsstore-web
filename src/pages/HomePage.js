@@ -24,6 +24,8 @@ useEffect(() => {
       );
       const snapshot = await getDocs(beatsQuery);
       const fetchedBeats = snapshot.docs.map(doc => ({
+        const daysAgo = Math.floor((new Date() - beat.createdAt) / (1000 * 60 * 60 * 24));
+
         id: doc.id,
         ...doc.data()
       }));
