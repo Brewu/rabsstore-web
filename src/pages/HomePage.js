@@ -181,17 +181,20 @@ useEffect(() => {
       <Link
   key={beat.id}
   to={`/beat/${beat.id}`}
-  style={{
-    background: '#1d1f27',
-    borderRadius: 10,
-    textDecoration: 'none',
-    color: '#fff',
-    padding: '1rem',
-    minWidth: 280,
-    flex: '0 0 auto',
-    scrollSnapAlign: 'start',
-    transition: 'transform 0.2s ease-in-out',
-  }}
+style={{
+  background: '#1d1f27',
+  borderRadius: 10,
+  textDecoration: 'none',
+  color: '#fff',
+  padding: '1rem',
+  width: '80vw',              // responsive width based on viewport
+  maxWidth: 300,              // never grow larger than this
+  minWidth: 200,
+  flex: '0 0 auto',
+  scrollSnapAlign: 'start',
+  transition: 'transform 0.2s ease-in-out',
+}}
+
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             >
