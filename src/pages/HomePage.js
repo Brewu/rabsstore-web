@@ -16,10 +16,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchBeats = async () => {
       try {
-        const beatsQuery = query(
-          collection(db, 'beats'),
-          orderBy('createdAt', 'desc')
-        );
+        const beatsQuery = query(collection(db, 'beats'), orderBy('createdAt', 'desc'));
         const snapshot = await getDocs(beatsQuery);
         const fetchedBeats = snapshot.docs.map(doc => {
           const data = doc.data();
@@ -44,33 +41,34 @@ const Homepage = () => {
 
   return (
     <div style={{ backgroundColor: '#121418', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
-      
+      {/* Scrollbar Styling */}
+      <style>{`
+        .scrollbar-visible {
+          display: flex;
+          overflow-x: auto;
+          padding-bottom: 1rem;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: auto;
+          scrollbar-color: #555 #1d1f27;
+        }
+        .scrollbar-visible::-webkit-scrollbar {
+          height: 12px;
+        }
+        .scrollbar-visible::-webkit-scrollbar-thumb {
+          background-color: #555;
+          border-radius: 6px;
+        }
+        .scrollbar-visible::-webkit-scrollbar-track {
+          background-color: #1d1f27;
+        }
+      `}</style>
+
       {/* Navigation Bar */}
-      <nav
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#1e1f25',
-          padding: '10px',
-          borderBottom: '1px solid #2a2b33',
-          rowGap: '1rem',
-          width: '100%',
-        }}
-      >
+      <nav style={navStyle}>
         <h2 style={{ color: '#fff', fontWeight: 'bold', margin: 0 }}>🎵 RabsStore</h2>
 
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
+        <div style={navButtonGroupStyle}>
           <button onClick={() => navigate('/')} style={navBtnStyle}>Home</button>
 
           <div style={{ position: 'relative' }}>
@@ -81,34 +79,14 @@ const Homepage = () => {
               <FaShoppingCart />
               Cart
               {cartArray.length > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: -5,
-                  right: -10,
-                  background: 'red',
-                  color: '#fff',
-                  borderRadius: '50%',
-                  padding: '2px 6px',
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold'
-                }}>
+                <span style={cartCountStyle}>
                   {cartArray.length}
                 </span>
               )}
             </button>
 
             {showCartDropdown && (
-              <div style={{
-                position: 'absolute',
-                right: 0,
-                top: '2.8rem',
-                backgroundColor: '#1d1f27',
-                padding: '1rem',
-                borderRadius: 8,
-                width: 250,
-                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                zIndex: 100
-              }}>
+              <div style={cartDropdownStyle}>
                 {cartArray.length === 0 ? (
                   <p style={{ color: '#ccc', fontSize: '0.9rem' }}>Cart is empty</p>
                 ) : (
@@ -116,7 +94,7 @@ const Homepage = () => {
                     {cartArray.slice(0, 3).map(({ beat, quantity }) => (
                       <li key={beat.id} style={{ marginBottom: '0.8rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <img src={beat.image} alt={beat.title} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6 }} />
+                          <img src={beat.image} alt={beat.title} style={cartImageStyle} />
                           <div>
                             <p style={{ margin: 0, fontSize: '0.9rem', color: '#fff' }}>{beat.title} × {quantity}</p>
                             <p style={{ margin: 0, fontSize: '0.8rem', color: '#aaa' }}>₵{beat.price}</p>
@@ -131,17 +109,7 @@ const Homepage = () => {
                     setShowCartDropdown(false);
                     navigate('/Cart');
                   }}
-                  style={{
-                    marginTop: '0.5rem',
-                    width: '100%',
-                    padding: '0.5rem',
-                    backgroundColor: '#4caf50',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 5,
-                    cursor: 'pointer',
-                    fontWeight: 600
-                  }}
+                  style={viewCartBtnStyle}
                 >
                   View Full Cart
                 </button>
@@ -171,48 +139,15 @@ const Homepage = () => {
       {/* Beat Grid */}
       <div style={{ padding: '2rem', color: '#fff' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>🎵 RabsStore</h1>
-        <div
-          style={{
-            display: 'flex',
-            overflowX: 'auto',
-            gap: '1rem',
-            paddingBottom: '1rem',
-            scrollSnapType: 'x mandatory',
-            WebkitOverflowScrolling: 'touch'
-          }}
-        >
+        <div className="scrollbar-visible">
           {beats.map(beat => (
-            <Link
+            <div
               key={beat.id}
-              to={`/beat/${beat.id}`}
-              style={{
-                background: '#1d1f27',
-                borderRadius: 10,
-                textDecoration: 'none',
-                color: '#fff',
-                padding: '1rem',
-                width: '80vw',
-                maxWidth: 300,
-                minWidth: 200,
-                flex: '0 0 auto',
-                scrollSnapAlign: 'start',
-                transition: 'transform 0.2s ease-in-out',
-              }}
+              style={beatCardStyle}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             >
-              <img
-                src={beat.image}
-                alt={beat.title}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  aspectRatio: '16 / 9',
-                  objectFit: 'cover',
-                  borderRadius: 10,
-                  marginBottom: '0.8rem'
-                }}
-              />
+              <img src={beat.image} alt={beat.title} style={beatImageStyle} />
               <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
               <p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
               <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>₵{beat.price}</p>
@@ -224,12 +159,44 @@ const Homepage = () => {
                   })()}
                 </p>
               )}
-            </Link>
+              {beat.youtubeUrl && (
+                <a
+                  href={beat.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={youtubeBtnStyle}
+                >
+                  Watch on YouTube
+                </a>
+              )}
+            </div>
           ))}
         </div>
       </div>
     </div>
   );
+};
+
+// === Styles ===
+const navStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#1e1f25',
+  padding: '10px',
+  borderBottom: '1px solid #2a2b33',
+  rowGap: '1rem',
+  width: '100%',
+};
+
+const navButtonGroupStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '1rem',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%',
 };
 
 const navBtnStyle = {
@@ -242,6 +209,85 @@ const navBtnStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '0.4rem'
+};
+
+const cartCountStyle = {
+  position: 'absolute',
+  top: -5,
+  right: -10,
+  background: 'red',
+  color: '#fff',
+  borderRadius: '50%',
+  padding: '2px 6px',
+  fontSize: '0.75rem',
+  fontWeight: 'bold'
+};
+
+const cartDropdownStyle = {
+  position: 'absolute',
+  right: 0,
+  top: '2.8rem',
+  backgroundColor: '#1d1f27',
+  padding: '1rem',
+  borderRadius: 8,
+  width: 250,
+  boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+  zIndex: 100
+};
+
+const cartImageStyle = {
+  width: 40,
+  height: 40,
+  objectFit: 'cover',
+  borderRadius: 6
+};
+
+const viewCartBtnStyle = {
+  marginTop: '0.5rem',
+  width: '100%',
+  padding: '0.5rem',
+  backgroundColor: '#4caf50',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 5,
+  cursor: 'pointer',
+  fontWeight: 600
+};
+
+const beatCardStyle = {
+  background: '#1d1f27',
+  borderRadius: 10,
+  textDecoration: 'none',
+  color: '#fff',
+  padding: '1rem',
+  width: '80vw',
+  maxWidth: 300,
+  minWidth: 200,
+  flex: '0 0 auto',
+  scrollSnapAlign: 'start',
+  transition: 'transform 0.2s ease-in-out',
+  marginRight: '1rem'
+};
+
+const beatImageStyle = {
+  width: '100%',
+  height: 'auto',
+  aspectRatio: '16 / 9',
+  objectFit: 'cover',
+  borderRadius: 10,
+  marginBottom: '0.8rem'
+};
+
+const youtubeBtnStyle = {
+  marginTop: '0.5rem',
+  display: 'inline-block',
+  backgroundColor: '#FF0000',
+  padding: '0.4rem 0.8rem',
+  color: '#fff',
+  borderRadius: 6,
+  textDecoration: 'none',
+  fontWeight: 600,
+  fontSize: '0.9rem'
 };
 
 export default Homepage;
