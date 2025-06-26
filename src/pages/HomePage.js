@@ -140,37 +140,39 @@ const Homepage = () => {
       <div style={{ padding: '2rem', color: '#fff' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>🎵 RabsStore</h1>
         <div className="scrollbar-visible">
-          {beats.map(beat => (
-            <div
-              key={beat.id}
-              style={beatCardStyle}
-              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-            >
-              <img src={beat.image} alt={beat.title} style={beatImageStyle} />
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
-              <p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
-              <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>₵{beat.price}</p>
-              {beat.createdAt && (
-                <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.3rem' }}>
-                  {(() => {
-                    const daysAgo = Math.floor((new Date() - beat.createdAt) / (1000 * 60 * 60 * 24));
-                    return `Added: ${daysAgo === 0 ? 'Today' : `${daysAgo} day(s) ago`}`;
-                  })()}
-                </p>
-              )}
-              {beat.youtubeUrl && (
-                <a
-                  href={beat.youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={youtubeBtnStyle}
-                >
-                  Watch on YouTube
-                </a>
-              )}
-            </div>
-          ))}
+   {beats.map(beat => (
+  <Link to={`/beat/${beat.id}`} key={beat.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+    <div
+      style={{ ...beatCardStyle, cursor: 'pointer' }}
+      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
+      <img src={beat.image} alt={beat.title} style={beatImageStyle} />
+      <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>{beat.title}</h3>
+      <p style={{ color: '#bbb', marginBottom: '0.2rem' }}>Genre: {beat.genre}</p>
+      <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>₵{beat.price}</p>
+      {beat.createdAt && (
+        <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.3rem' }}>
+          {(() => {
+            const daysAgo = Math.floor((new Date() - beat.createdAt) / (1000 * 60 * 60 * 24));
+            return `Added: ${daysAgo === 0 ? 'Today' : `${daysAgo} day(s) ago`}`;
+          })()}
+        </p>
+      )}
+      {beat.youtubeUrl && (
+        <a
+          href={beat.youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={youtubeBtnStyle}
+          onClick={e => e.stopPropagation()} // avoid navigation hijack
+        >
+          Watch on YouTube
+        </a>
+      )}
+    </div>
+  </Link>
+))}
+
         </div>
       </div>
     </div>
